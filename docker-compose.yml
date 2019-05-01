@@ -25,6 +25,16 @@ services:
       - back
       - front
 
+  phppgadmin:
+      image: zhajor/docker-phppgadmin:latest
+      environment:
+        - DB_HOST=postgresql
+        - DB_PORT=5432
+      depends_on:
+        - postgres
+      networks:
+        - front
+
   postgres:
     image: postgres
     ports:
