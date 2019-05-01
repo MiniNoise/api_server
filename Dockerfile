@@ -6,9 +6,13 @@ LABEL version="1.0.0"
 EXPOSE 3000 9229
 
 RUN mkdir /app
+
 WORKDIR /app
+
 COPY . .
 
-RUN npm install
+RUN rm -rf node_modules
 
-CMD ./run.sh
+RUN chmod +x run.sh
+
+RUN npm ci

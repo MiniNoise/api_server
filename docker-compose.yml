@@ -13,8 +13,9 @@ volumes:
 services:
   app:
     build: .
+    command: npm run run
     volumes:
-      - .:/app
+      - .:/app:z
     depends_on:
       - postgres
     ports:
