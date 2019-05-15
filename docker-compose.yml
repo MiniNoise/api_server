@@ -17,29 +17,37 @@ services:
     volumes:
       - .:/app:z
     depends_on:
-      - postgres
+      - db
     ports:
       - "3000:3000"
       - "9229:9299"
+    links:
+      - db:postgres
     networks:
       - back
       - front
 
-  phppgadmin:
-      image: zhajor/docker-phppgadmin:latest
+  db:
+      image: postgres
+      volumes:
+          - ${DATABASE_DATA_DIR}:/var/lib/postgresql/data
+          - ${DATABASE_LOG_DIR}:/var/log/postgresql
+      ports:
+          - "${DATABASE_PORT}:5432"
       environment:
-        - DB_HOST=postgresql
-        - DB_PORT=5432
-      depends_on:
-        - postgres
-      networks:
-        - front
+          - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+          - POSTGRES_USER=${DATABASE_USER}
+          - POSTGRES_DB=${DATABASE_NAME}
+          - PGDATA=/var/lib/postgresql/data/pgdata
 
-  postgres:
-    image: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    networks:
-      - back
+  phppgadmin:
+      # fixed fork of jacksoncage/phppgadmin
+      image: dockage/phppgadmin
+      ports:
+          - "${PHP_PG_ADMIN_PORT}:80"
+      environment:
+          - PHP_PG_ADMIN_SERVER_HOST=db
+          - PHP_PG_ADMIN_SERVER_PORT=${DATABASE_PORT}
+          - PHP_PG_ADMIN_SERVER_DEFAULT_DB=${DATABASE_NAME}
+      links:
+          - db:postgres
