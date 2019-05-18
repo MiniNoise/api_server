@@ -26,6 +26,8 @@ services:
     networks:
       - back
       - front
+    environment:
+      - POSTGRES_URL=postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/${DATABASE_NAME}
 
   db:
       image: postgres
