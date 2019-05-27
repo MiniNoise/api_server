@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/MiniNoise/api_server#readme",
   "dependencies": {
-    "@booster-ts/core": "file:../../../Projects/Booster-ts/core",
+    "@booster-ts/core": "^0.2.1",
     "@types/pg": "^7.4.14",
     "express": "^4.16.4",
     "pg": "^7.10.0",

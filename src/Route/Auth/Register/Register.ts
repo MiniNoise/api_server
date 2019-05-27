@@ -7,7 +7,7 @@ import { IResponse } from '../../../Modules/Response/IResponse'
 @booster({
     init: true
 })
-export default class Login {
+export default class Register {
 
     private app: Express;
 
@@ -17,17 +17,18 @@ export default class Login {
         this.app = this.express.getApp();
     }
 
+
     public init() {
-        this.app.post("/auth/login", this.login);
+        this.app.post("/auth/login", this.register);
     }
 
-    private login(req: Request, res: Response): void {
+    private register(req: Request, res: Response): void {
         const response: IResponse = {
             code: "00",
-            text: "Login OK"
+            text: "Register OK"
         };
-        res.send(response);
+        res.send(200);
     }
 }
 
-inject.register("Login", Login);
+inject.register("Register", Register);

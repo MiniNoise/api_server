@@ -5,11 +5,11 @@ import * as pg from 'pg';
 @booster()
 export default class DatabaseModule {
 
-    private connection_url: string | undefined;
+    private connection_url: string;
     private client: pg.Client;
 
     constructor() {
-        this.connection_url = process.env.DATABASE_URL;
+        this.connection_url = process.env.POSTGRES_URL;
         this.client = new pg.Client(this.connection_url);
     }
 

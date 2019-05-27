@@ -11,8 +11,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN rm -rf node_modules
-
 RUN chmod +x run.sh
 
 RUN npm ci

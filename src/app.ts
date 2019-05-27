@@ -9,12 +9,13 @@ const express   = injector.inject(ExpressModule);
 const dataBase  = injector.inject(DatabaseModule);
 
 Promise.all([
-    express.init, 
-    dataBase.init
+    express.init(),
+    dataBase.init()
 ]).then(() => {
     console.log("Done Init Base Modules");
 })
 .catch((error) => {
     console.error("Error Occured");
     console.error(error);
-})
+    process.exit(1);
+});

@@ -27,6 +27,7 @@ services:
       - back
       - front
     environment:
+      - SERVER_PORT=3000
       - POSTGRES_URL=postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/${DATABASE_NAME}
 
   db:
