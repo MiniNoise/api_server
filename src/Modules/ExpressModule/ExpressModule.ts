@@ -18,13 +18,12 @@ export default class ExpressModule {
 
     public init() {
         return new Promise((resolve, reject) => {
-            this.server = this.app.listen(this.port, (error: any) => {
-                if (error)
-                    reject(error);
-                else {
-                    this.app.use(bodyParser.json());
-                    resolve();
-                }
+            this.app.listen(this.port, () => {
+                this.app.use(bodyParser.json());
+                resolve();
+            })
+            .once('error', (error) => {
+                reject(error);
             });
         });
     }
