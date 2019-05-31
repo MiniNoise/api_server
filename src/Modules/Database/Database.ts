@@ -9,8 +9,12 @@ export default class DatabaseModule {
     private client: pg.Client;
 
     constructor() {
-        this.connection_url = process.env.POSTGRES_URL;
-        this.client = new pg.Client(this.connection_url);
+        this.client = new pg.Client({
+            password: process.env.DATABASE_PASSWORD,
+            user: process.env.DATABASE_USER,
+            database: process.env.DATABASE_NAME,
+            host: "postgres",
+          });
     }
 
     public init(): Promise<void> {

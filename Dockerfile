@@ -11,6 +11,9 @@ WORKDIR /app
 
 COPY . .
 
+RUN apt-get install libpq-dev g++ make -y
+RUN npm install --no-optional
+RUN npm i pg-native
 RUN chmod +x run.sh
 
 RUN npm ci

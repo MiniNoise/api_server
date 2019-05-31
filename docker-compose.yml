@@ -1,11 +1,5 @@
 version: '3'
 
-networks:
-  front:
-    driver: bridge
-  back:
-    driver: bridge
-
 volumes:
   postgres-data:
     driver: local
@@ -17,31 +11,28 @@ services:
     volumes:
       - .:/app:z
     depends_on:
-      - db
+      - postgres
+    links:
+      - postgres:postgres
     ports:
       - "3000:3000"
       - "9229:9299"
-    links:
-      - db:postgres
-    networks:
-      - back
-      - front
     environment:
       - SERVER_PORT=3000
-      - POSTGRES_URL=postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@db/${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
 
-  db:
-      image: postgres
-      volumes:
-          - ${DATABASE_DATA_DIR}:/var/lib/postgresql/data
-          - ${DATABASE_LOG_DIR}:/var/log/postgresql
-      ports:
-          - "${DATABASE_PORT}:5432"
-      environment:
-          - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-          - POSTGRES_USER=${DATABASE_USER}
-          - POSTGRES_DB=${DATABASE_NAME}
-          - PGDATA=/var/lib/postgresql/data/pgdata
+  postgres:
+    image: postgres:11.2-alpine
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "${DATABASE_PORT}:5432"
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
 
   phppgadmin:
       # fixed fork of jacksoncage/phppgadmin
@@ -49,8 +40,8 @@ services:
       ports:
           - "${PHP_PG_ADMIN_PORT}:80"
       environment:
-          - PHP_PG_ADMIN_SERVER_HOST=db
+          - PHP_PG_ADMIN_SERVER_HOST=postgres
           - PHP_PG_ADMIN_SERVER_PORT=${DATABASE_PORT}
           - PHP_PG_ADMIN_SERVER_DEFAULT_DB=${DATABASE_NAME}
       links:
-          - db:postgres
+          - postgres:postgres
