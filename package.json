@@ -1,0 +1,25 @@
+{
+    "name": "api_server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./dist/app.js",
+    "scripts": {
+        "start": "node ./dist/app.js",
+        "build": "tsc"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MiniNoise/api_server.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/MiniNoise/api_server/issues"
+    },
+    "homepage": "",
+    "dependencies": {
+        "@booster-ts/core": "^0.2.1",
+        "typescript": "^3.5.2"
+    }
+}
