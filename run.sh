@@ -1,4 +1,4 @@
 #!/bin/sh
 
-npm run build
-node .
+sleep 5
+npm run dev-start
