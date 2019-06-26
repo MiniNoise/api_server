@@ -2,7 +2,7 @@ import { booster } from '@booster-ts/core';
 import inject from '../../injector';
 import Database from '../../Modules/Database/Database';
 import Utils from '../../Modules/Utils/Utils';
-import { userRegister, createToken, userLogin } from './Query';
+import { userRegister, createToken, userLogin, removeUser } from './Query';
 import { QueryResult } from 'pg';
 
 /**
@@ -42,10 +42,21 @@ export default class UserService {
      * @param password User Password
      */
     public login(email: string, password: string): Promise<string> {
+        console.log(email, password);
         return this.db.query(userLogin, [email, password])
         .then((result: QueryResult) => {
+            console.log(result);
             return this.newToken(result.rows[0].idUser);
         });
+    }
+
+    /**
+     * removeAccount
+     * @description Removes user account
+     * @param email of the user
+     */
+    public removeAccount(email: string): Promise<any> {
+        return this.db.query(removeUser, [email]);
     }
 
     /**
@@ -56,6 +67,7 @@ export default class UserService {
     private newToken(idUser: number): Promise<string> {
         return new Promise((resolve, reject) => {
             const token = this.utils.createToken();
+            console.log(`Creating token for ${idUser}`);
             this.db.query(createToken, [idUser, token])
             .then(() => {
                 resolve(token);

@@ -4,6 +4,7 @@ import { Express, Request, Response } from 'express';
 import ExpressModule from '../../Modules/Express/Express';
 import Utils from '../../Modules/Utils/Utils';
 import UserService from '../../Services/UserService/UserService';
+import Session from '../../Services/Session/Session';
 
 /**
  * UserRoute
@@ -22,7 +23,8 @@ export default class UserRoute {
     constructor(
         express: ExpressModule,
         private user: UserService,
-        private utils: Utils
+        private utils: Utils,
+        private session: Session
     ) {
         this.app = express.getApp();
     }
@@ -34,6 +36,7 @@ export default class UserRoute {
     public init(): void {
         this.app.post('/api/v1/user', this.register.bind(this));
         this.app.post('/api/v1/user/:email', this.login.bind(this));
+        this.app.delete('/api/v1/user/:email', this.delete.bind(this));
     }
 
     /**
@@ -87,6 +90,32 @@ export default class UserRoute {
                 data: {
                     session: token
                 }
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(500).json({code: "02", text: "Error"});
+        });
+    }
+
+    /**
+     * delete
+     * @description Deletes User Account
+     * @param req HTTP Request
+     * @param res HTTP Response
+     */
+    private delete(req: Request, res: Response): void {
+        const email = req.params.email;
+        const token = req.headers.authorization;
+
+        this.session.validateUser(email, token)
+        .then(() => {
+            return this.user.removeAccount(email);
+        })
+        .then(() => {
+            res.json({
+                code: "00",
+                text: "Account Deleted"
             });
         })
         .catch((error) => {

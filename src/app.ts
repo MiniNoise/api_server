@@ -20,5 +20,6 @@ Promise.all([
     console.log("App Started");
 })
 .catch((error) => {
+    console.log(error);
     process.exit(84);
 });
