@@ -27,7 +27,7 @@ export default class MinitelRoute {
      */
     public init(): void {
         this.app.post('/api/v1/minitel', this.register.bind(this));
-        this.app.get('/api/v1/minitel', this.getMinitels.bind(this));
+        this.app.get('/api/v1/minitel/:email', this.getMinitels.bind(this));
         this.app.delete('/api/v1/minitel/:uid', this.removeMinitel.bind(this));
     }
 
@@ -64,7 +64,7 @@ export default class MinitelRoute {
      * @param res HTTP Response
      */
     private getMinitels(req: Request, res: Response): void {
-        const email = req.body.email;
+        const email = req.params.email;
         const token = req.headers.authorization;
 
         this.session.validateUser(email, token)
@@ -108,7 +108,6 @@ export default class MinitelRoute {
             });
         })
         .catch((error) => {
-            console.log(error);
             res.status(500).json({code: "02", text: "Error"});
         });
     }

@@ -2,8 +2,9 @@ import { booster } from '@booster-ts/core';
 import inject from '../../injector';
 import Database from '../../Modules/Database/Database';
 import Utils from '../../Modules/Utils/Utils';
-import { userRegister, createToken, userLogin, removeUser } from './Query';
+import { userRegister, userLogin, removeUser } from './Query';
 import { QueryResult } from 'pg';
+import Session from '../Session/Session';
 
 /**
  * UserService
@@ -15,7 +16,7 @@ export default class UserService {
 
     constructor(
         private db: Database,
-        private utils: Utils
+        private session: Session
     ) { }
 
     /**
@@ -31,7 +32,7 @@ export default class UserService {
             return this.db.getSerial("noise.users", "idUser");
         })
         .then((id: number) => {
-            return this.newToken(id);
+            return this.session.newSession(id);
         });
     }
 
@@ -42,11 +43,9 @@ export default class UserService {
      * @param password User Password
      */
     public login(email: string, password: string): Promise<string> {
-        console.log(email, password);
         return this.db.query(userLogin, [email, password])
         .then((result: QueryResult) => {
-            console.log(result);
-            return this.newToken(result.rows[0].idUser);
+            return this.session.newSession(result.rows[0].idUser);
         });
     }
 
@@ -57,25 +56,6 @@ export default class UserService {
      */
     public removeAccount(email: string): Promise<any> {
         return this.db.query(removeUser, [email]);
-    }
-
-    /**
-     * newToken
-     * @description Add session token to user
-     * @param idUser User identifier
-     */
-    private newToken(idUser: number): Promise<string> {
-        return new Promise((resolve, reject) => {
-            const token = this.utils.createToken();
-            console.log(`Creating token for ${idUser}`);
-            this.db.query(createToken, [idUser, token])
-            .then(() => {
-                resolve(token);
-            })
-            .catch((error) => {
-                reject(error);
-            });
-        });
     }
 
 }

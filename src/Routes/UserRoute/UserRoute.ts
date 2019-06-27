@@ -49,6 +49,7 @@ export default class UserRoute {
         const email = req.body.email;
         const password = req.body.password;
 
+        console.log(`Hello ${email}:${password}`);
         if (!this.utils.validateFields(email)) {
             res.status(500).json({code: "01", text: "Value Missing"});
             return;
@@ -119,6 +120,7 @@ export default class UserRoute {
             });
         })
         .catch((error) => {
+            console.log(error);
             res.status(500).json({code: "02", text: "Error"});
         });
     }

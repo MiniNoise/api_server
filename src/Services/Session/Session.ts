@@ -1,8 +1,9 @@
 import { booster } from '@booster-ts/core';
 import inject from '../../injector';
 import Database from '../../Modules/Database/Database';
-import { validateToken } from './Query';
+import { validateToken, createToken } from './Query';
 import { createError } from '../../Models/IError';
+import Utils from '../../Modules/Utils/Utils';
 
 /**
  * Session
@@ -13,7 +14,8 @@ import { createError } from '../../Models/IError';
 export default class Session {
 
     constructor(
-        private database: Database
+        private database: Database,
+        private utils: Utils
     ) { }
 
     /**
@@ -29,6 +31,24 @@ export default class Session {
                 if (result.rowCount === 1)
                     resolve(result.rows[0].idUser);
                 reject(createError('Session', "Failed to validate User"));
+            })
+            .catch((error) => {
+                reject(error);
+            });
+        });
+    }
+
+    /**
+     * newSession
+     * @description Created a new session
+     * @param idUser of the user
+     */
+    public newSession(idUser: number): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const token = this.utils.createToken();
+            this.database.query(createToken, [idUser, token])
+            .then(() => {
+                resolve(token);
             })
             .catch((error) => {
                 reject(error);

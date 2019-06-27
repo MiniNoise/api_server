@@ -23,6 +23,7 @@ export default class MinitelService {
      * @param idUser of the owner
      */
     public register(name: string, uid: string, idUser: number): Promise<any> {
+        console.log(`'${uid}'`);
         return this.db.query(createMinitel, [name, uid])
         .then((idMachine) => {
             return this.addOwner(uid, idUser);
